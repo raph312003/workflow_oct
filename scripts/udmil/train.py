@@ -15,7 +15,7 @@ from torch.utils.data import DataLoader
 # import numpy as np
 # import os
 
-# from src.oct_pipeline.loading import show_oct
+from src.oct_pipeline.loading import show_oct
 
 import torch
 from torch.utils.data import DataLoader, Subset
@@ -42,18 +42,18 @@ def main():
     dataset_train = OCTDataset(
         df=patient_data_opt,
         client=client,
-        size = (768, 486)
+        size = config["size"]
     )
 
     dataset_val = OCTDataset(
         df=patient_data_opt,
         client=client,
-        size = (768, 486)
+        size = config["size"]
     )
 
     dataset_train_test = Subset(
         dataset_train,
-        range(min(2, len(dataset_train)))
+        range(min(1, len(dataset_train)))
     )
 
     dataset_val_test = Subset(
@@ -98,7 +98,7 @@ def main():
     # print(len(scans_val["volume_ids"]))
     # print(len(scans_val["pixel_spacing"]))
 
-    # # ---- show bscans ----
+    # ---- show bscans ----
     # for idx in range(scans_val["bag_labels"].shape[0]):
     #     # Sélectionner les B-scans du bag idx
     #     indice = scans_val["bag_ids"] == idx
@@ -182,8 +182,8 @@ def main():
         rnn["epochs"],
         rnn["early_stopping"],
         combine_model,
-        learning_rate=rnn["lr"],
-        checkpoint_dir=rnn["model_weights"],
+        rnn["lr"],
+        rnn["checkpoint_dir"],
     )
     print("----Results-----")
 

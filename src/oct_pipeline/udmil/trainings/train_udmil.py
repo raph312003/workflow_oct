@@ -114,9 +114,9 @@ def train_one_epoch(
             return_features=False
         ).reshape(-1)
 
-        print("logits", logits.shape)
-        print("logits", instance_labels.shape)
-        print("reliability", reliability.shape)
+        # print("logits", logits.shape)
+        # print("logits", instance_labels.shape)
+        # print("reliability", reliability.shape)
 
         # image [4, 3, 224, 224]
         # model(images).shape [4, 1]
@@ -399,12 +399,12 @@ def udmil_training_all(
             )
         )
 
-        best_weights = copy.deepcopy(model.state_dict())
-        best_f1_scores = best_f1
+    best_weights = copy.deepcopy(model.state_dict())
+    best_f1_scores = best_f1
 
-        print(
-            f"Best F1 : {best_f1:.4f}"
-        )
+    print(
+        f"Best F1 : {best_f1:.4f}"
+    )
 
     return best_weights, best_f1_scores
 

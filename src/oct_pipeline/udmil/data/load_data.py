@@ -34,6 +34,13 @@ class OCTDataset(Dataset):
         ds = read_dicom_webdav(self.client, path)
         arr = ds.pixel_array
 
+        mid_slice = arr.shape[0]//2
+        s_min = mid_slice-5
+        s_max = mid_slice+5
+
+        arr = arr[s_min:s_max,...]
+        # print("arr_shape", arr.shape)
+
         # pixel spacing
         ps = pixel_spacing(ds)
 

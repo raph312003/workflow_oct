@@ -151,7 +151,7 @@ def show_oct(cube, patient_dir, id_p, id_v, ps):
     )
 
     fig.savefig(
-        os.path.join(patient_dir, f"OPT_{id_p}_{id_v}.png"),
+        os.path.join(patient_dir, f"OPT_{id_p}_{id_v}_bis.png"),
         dpi=200,
         bbox_inches="tight"
     )

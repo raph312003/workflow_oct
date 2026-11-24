@@ -141,124 +141,117 @@ def RNN_trainer_all(
     checkpoint_dir="model_weights",
 ):
 
-    best_f1_scores = {}
-    best_weights = {}
-
     os.makedirs(checkpoint_dir, exist_ok=True)
 
-    for train_loader in train_loaders:
+    checkpoint_path = os.path.join(
+        checkpoint_dir,
+        f"RNN_best.pth"
+    )
 
+    # --------------------------------
+    # 1. Initialize CNN + RNN
+    # --------------------------------
 
-        checkpoint_path = os.path.join(
-            checkpoint_dir,
-            f"RNN_best.pth"
+    optimizer = torch.optim.Adam(
+        model.parameters(),
+        lr=learning_rate
+    )
+
+    criterion = nn.CrossEntropyLoss()
+
+    best_f1 = float("-inf")
+    patience_counter = 0
+
+    # --------------------------------
+    # 2. Training loop
+    # --------------------------------
+
+    for epoch in range(epochs):
+
+        train_bar = tqdm(
+            train_loaders,
+            desc=f"Train {epoch + 1}/{epochs}"
+        )
+
+        train_loss = train_one_epoch(
+            train_dataloader=train_bar,
+            model=model,
+            device=device,
+            optimizer=optimizer,
+            criterion=criterion,
         )
 
         # --------------------------------
-        # 1. Initialize CNN + RNN
+        # 3. Validation
         # --------------------------------
 
-        optimizer = torch.optim.Adam(
-            model.parameters(),
-            lr=learning_rate
+        val_bar = tqdm(
+            val_loaders,
+            desc=f" Val {epoch + 1}/{epochs}"
         )
 
-        criterion = nn.CrossEntropyLoss()
-
-        best_f1 = float("-inf")
-        patience_counter = 0
-
-        # --------------------------------
-        # 2. Training loop
-        # --------------------------------
-
-        for epoch in range(epochs):
-
-            train_bar = tqdm(
-                train_loader,
-                desc=f"Train {epoch + 1}/{epochs}"
-            )
-
-            train_loss = train_one_epoch(
-                train_dataloader=train_bar,
-                model=model,
-                device=device,
-                optimizer=optimizer,
-                criterion=criterion,
-            )
-
-            # --------------------------------
-            # 3. Validation
-            # --------------------------------
-
-            val_bar = tqdm(
-                val_loaders,
-                desc=f" Val {epoch + 1}/{epochs}"
-            )
-
-            val_loss, val_f1, val_accuracy = val_one_epoch(
-                val_dataloader=val_bar,
-                model=model,
-                device=device,
-            )
-
-            print(
-                f"| Epoch {epoch + 1}/{epochs} "
-                f"| Train loss: {train_loss:.4f} "
-                f"| Val loss: {val_loss:.4f} "
-                f"| Val F1: {val_f1:.4f} "
-                f"| Val Acc: {val_accuracy:.4f}"
-            )
-
-            # --------------------------------
-            # 4. Best checkpoint
-            # --------------------------------
-
-            if val_f1 > best_f1:
-
-                best_f1 = val_f1
-                patience_counter = 0
-
-                torch.save(
-                    model.state_dict(),
-                    checkpoint_path
-                )
-
-            else:
-
-                patience_counter += 1
-
-            # --------------------------------
-            # 5. Early stopping
-            # --------------------------------
-
-            if patience_counter >= early_stopping:
-
-                print(
-                    f"Early stopping "
-                    f"at epoch {epoch + 1}"
-                )
-
-                break
-
-        # --------------------------------
-        # 6. Load best model
-        # --------------------------------
-
-        model.load_state_dict(
-            torch.load(
-                checkpoint_path,
-                map_location=device,
-                weights_only=True,
-            )
+        val_loss, val_f1, val_accuracy = val_one_epoch(
+            val_dataloader=val_bar,
+            model=model,
+            device=device,
         )
-
-        best_weights = model
-        best_f1_scores = best_f1
 
         print(
-            f"Best F1 : {best_f1:.4f}"
+            f"| Epoch {epoch + 1}/{epochs} "
+            f"| Train loss: {train_loss:.4f} "
+            f"| Val loss: {val_loss:.4f} "
+            f"| Val F1: {val_f1:.4f} "
+            f"| Val Acc: {val_accuracy:.4f}"
         )
+
+        # --------------------------------
+        # 4. Best checkpoint
+        # --------------------------------
+
+        if val_f1 > best_f1:
+
+            best_f1 = val_f1
+            patience_counter = 0
+
+            torch.save(
+                model.state_dict(),
+                checkpoint_path
+            )
+
+        else:
+
+            patience_counter += 1
+
+        # --------------------------------
+        # 5. Early stopping
+        # --------------------------------
+
+        if patience_counter >= early_stopping:
+
+            print(
+                f"Early stopping at epoch {epoch + 1}"
+            )
+
+            break
+
+    # --------------------------------
+    # 6. Load best model
+    # --------------------------------
+
+    model.load_state_dict(
+        torch.load(
+            checkpoint_path,
+            map_location=device,
+            weights_only=True,
+        )
+    )
+
+    best_weights = model
+    best_f1_scores = best_f1
+
+    print(
+        f"Best F1 : {best_f1:.4f}"
+    )
 
     return best_weights, best_f1_scores
 
