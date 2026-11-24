@@ -1,0 +1,6 @@
+dicom_path_disp : /Uveitis/OCT XR/1ère extraction/Imagerie/HRA
+username : 6fef28b0-6242-1041-9be8-290d06645fc2
+password : Ecorans3105@
+url : https://www.intranet.disp-lab.fr/remote.php/dav/files/6fef28b0-6242-1041-9be8-290d06645fc2/
+patient_id: [7905] # liste patient id [6712,6725,6726,6727]
+laterality: R # ["L", "R"]

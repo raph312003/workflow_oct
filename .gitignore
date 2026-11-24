@@ -1,0 +1,12 @@
+.mon_env
+.vscode
+/third_party/RETFound_MAE/
+/models
+*.csv
+*.jsonl
+*.png
+/show_patient
+/extraction_HRA
+*.pyc
+*.pth
+*.ipynb
