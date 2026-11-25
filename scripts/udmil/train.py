@@ -36,29 +36,30 @@ def main():
 
     inv = pd.read_csv(config["dataset"])
 
-    patient_data_opt = inv[inv["split"] == "train"]#.reset(drop=True)
-    patient_data_opt = inv[inv["split"] == "val"]#.reset(drop=True)
+    patient_data_opt_train = inv[inv["split"] == "train"]#.reset(drop=True)
+    patient_data_opt_val = inv[inv["split"] == "val"]#.reset(drop=True)
 
     dataset_train = OCTDataset(
-        df=patient_data_opt,
+        df=patient_data_opt_train,
         client=client,
         size = config["size"]
     )
 
     dataset_val = OCTDataset(
-        df=patient_data_opt,
+        df=patient_data_opt_val,
         client=client,
         size = config["size"]
     )
 
     dataset_train_test = Subset(
         dataset_train,
-        range(min(1, len(dataset_train)))
+        range(min(10, len(dataset_train)))
     )
+
 
     dataset_val_test = Subset(
         dataset_val,
-        range(min(1, len(dataset_val)))
+        range(min(2, len(dataset_val)))
     )
 
     train_loader = DataLoader(

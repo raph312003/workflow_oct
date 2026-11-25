@@ -1,0 +1,9 @@
+dataset : scripts/retfound_classification/dataset.csv
+checkpoint_udmil : models/udmil/udmil_best.pth
+display_dir :  display_dir
+username : 6fef28b0-6242-1041-9be8-290d06645fc2
+password : Ecorans3105@
+url : https://www.intranet.disp-lab.fr/remote.php/dav/files/6fef28b0-6242-1041-9be8-290d06645fc2/
+batch_size : 1
+size : [256, 162] # tuple [256, 162]
+feature_dim : 516

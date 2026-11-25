@@ -292,7 +292,7 @@ def udmil_training_all(
         print(
             f"Epoch {epoch + 1}/{epochs} "
             f"Train loss: {train_loss:.4f} "
-            f"Val F1: {val_f1:.4f}"
+            f"Val F1: {val_f1:.6f}"
         )
 
         # -------------------------
@@ -356,8 +356,12 @@ def udmil_training_all(
             for param in model.parameters():
                 param.requires_grad = False
 
-            # Unfreeze final connected layer
-            for param in model.fc.parameters():
+            # Freeze/unfreeze projection layer
+            for param in model.projection.parameters():
+                param.requires_grad = False
+
+            # Freeze/unfreeze classification layer
+            for param in model.classification.parameters():
                 param.requires_grad = True
 
             # Recreate optimizer with trainable parameters only

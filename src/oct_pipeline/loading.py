@@ -8,6 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
+
 def read_dicom_webdav(client, path, **kwargs):
     with client.open(path, "rb") as fichier:
         return pydicom.dcmread(BytesIO(fichier.read()), **kwargs)
@@ -156,3 +157,5 @@ def show_oct(cube, patient_dir, id_p, id_v, ps):
         bbox_inches="tight"
     )
     plt.close(fig)
+
+
